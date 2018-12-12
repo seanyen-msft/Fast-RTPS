@@ -277,6 +277,13 @@ ParameterList_t WriterProxyData::toParameterList()
     }
 #endif
 
+    if (m_qos.m_dataRepresentation.sendAlways() || m_qos.m_dataRepresentation.hasChanged)
+    {
+        DataRepresentationQosPolicy*p = new DataRepresentationQosPolicy();
+        *p = m_qos.m_dataRepresentation;
+        parameter_list.m_parameters.push_back((Parameter_t*)p);
+    }
+
     logInfo(RTPS_PROXY_DATA," with " << parameter_list.m_parameters.size()<< " parameters");
     return parameter_list;
 }
@@ -482,6 +489,14 @@ bool WriterProxyData::readFromCDRMessage(CDRMessage_t* msg)
                         plugin_security_attributes_ = p->plugin_security_attributes;
                     }
 #endif
+
+                case PID_DATA_REPRESENTATION:
+                {
+                    DataRepresentationQosPolicy* p = (DataRepresentationQosPolicy*)(*it);
+                    m_qos.m_dataRepresentation = *p;
+                    break;
+                }
+
                 default:
                     {
                         //logInfo(RTPS_PROXY_DATA,"Parameter with ID: " << (uint16_t)(*it)->Pid <<" NOT CONSIDERED");

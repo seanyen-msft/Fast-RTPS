@@ -41,22 +41,23 @@ public:
     bool operator==(const WriterQos& b) const
     {
         return (this->m_durability == b.m_durability) &&
-               (this->m_durabilityService == b.m_durabilityService) &&
-               (this->m_deadline == b.m_deadline) &&
-               (this->m_latencyBudget == b.m_latencyBudget) &&
-               (this->m_liveliness == b.m_liveliness) &&
-               (this->m_reliability == b.m_reliability) &&
-               (this->m_lifespan == b.m_lifespan) &&
-               (this->m_userData == b.m_userData) &&
-               (this->m_timeBasedFilter == b.m_timeBasedFilter) &&
-               (this->m_ownership == b.m_ownership) &&
-               (this->m_ownershipStrength == b.m_ownershipStrength) &&
-               (this->m_destinationOrder == b.m_destinationOrder) &&
-               (this->m_presentation == b.m_presentation) &&
-               (this->m_partition == b.m_partition) &&
-               (this->m_topicData == b.m_topicData) &&
-               (this->m_groupData == b.m_groupData) &&
-               (this->m_publishMode == b.m_publishMode);
+            (this->m_durabilityService == b.m_durabilityService) &&
+            (this->m_deadline == b.m_deadline) &&
+            (this->m_latencyBudget == b.m_latencyBudget) &&
+            (this->m_liveliness == b.m_liveliness) &&
+            (this->m_reliability == b.m_reliability) &&
+            (this->m_lifespan == b.m_lifespan) &&
+            (this->m_userData == b.m_userData) &&
+            (this->m_timeBasedFilter == b.m_timeBasedFilter) &&
+            (this->m_ownership == b.m_ownership) &&
+            (this->m_ownershipStrength == b.m_ownershipStrength) &&
+            (this->m_destinationOrder == b.m_destinationOrder) &&
+            (this->m_presentation == b.m_presentation) &&
+            (this->m_partition == b.m_partition) &&
+            (this->m_topicData == b.m_topicData) &&
+            (this->m_groupData == b.m_groupData) &&
+            (this->m_publishMode == b.m_publishMode) &&
+            (this->m_dataRepresentation == b.m_dataRepresentation);
     }
 
 	//!Durability Qos, implemented in the library.
@@ -91,9 +92,11 @@ public:
 	TopicDataQosPolicy m_topicData;
 	//!Group Data Qos, NOT implemented in the library.
 	GroupDataQosPolicy m_groupData;
-	//!Publication Mode Qos, implemented in the library.
-	PublishModeQosPolicy m_publishMode;
-	/**
+    //!Publication Mode Qos, implemented in the library.
+    PublishModeQosPolicy m_publishMode;
+    //!Data Representation Qos, implemented in the library.
+    DataRepresentationQosPolicy m_dataRepresentation;
+    /**
 	 * Set Qos from another class
 	 * @param qos Reference from a WriterQos object.
 	 * @param first_time Boolean indicating whether is the first time (If not some parameters cannot be set).

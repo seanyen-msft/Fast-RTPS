@@ -114,6 +114,11 @@ void ReaderQos::setQos(const ReaderQos& qos, bool first_time)
 		m_lifespan = qos.m_lifespan;
 		m_lifespan.hasChanged = true;
 	}
+    if (m_dataRepresentation.m_value != qos.m_dataRepresentation.m_value)
+    {
+        m_dataRepresentation = qos.m_dataRepresentation;
+        m_dataRepresentation.hasChanged = true;
+    }
 }
 
 

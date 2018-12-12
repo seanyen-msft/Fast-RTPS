@@ -267,6 +267,13 @@ ParameterList_t ReaderProxyData::toParameterList()
     }
 #endif
 
+    if (m_qos.m_dataRepresentation.sendAlways() || m_qos.m_dataRepresentation.hasChanged)
+    {
+        DataRepresentationQosPolicy*p = new DataRepresentationQosPolicy();
+        *p = m_qos.m_dataRepresentation;
+        parameter_list.m_parameters.push_back((Parameter_t*)p);
+    }
+
     logInfo(RTPS_PROXY_DATA,"DiscoveredReaderData converted to ParameterList with " << parameter_list.m_parameters.size()<< " parameters");
     return parameter_list;
 }
