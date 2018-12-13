@@ -154,97 +154,97 @@ ParameterList_t WriterProxyData::toParameterList()
         ParameterGuid_t * p = new ParameterGuid_t(PID_PERSISTENCE_GUID, 16, persistence_guid_);
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if( m_qos.m_durability.sendAlways() || m_qos.m_durability.hasChanged)
+    if( m_qos.m_durability.sendAlways() || m_qos.m_durability.hasChanged())
     {
         DurabilityQosPolicy*p = new DurabilityQosPolicy();
         *p = m_qos.m_durability;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_durabilityService.sendAlways() || m_qos.m_durabilityService.hasChanged)
+    if(m_qos.m_durabilityService.sendAlways() || m_qos.m_durabilityService.hasChanged())
     {
         DurabilityServiceQosPolicy*p = new DurabilityServiceQosPolicy();
         *p = m_qos.m_durabilityService;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_deadline.sendAlways() ||  m_qos.m_deadline.hasChanged)
+    if(m_qos.m_deadline.sendAlways() ||  m_qos.m_deadline.hasChanged())
     {
         DeadlineQosPolicy*p = new DeadlineQosPolicy();
         *p = m_qos.m_deadline;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_latencyBudget.sendAlways() ||  m_qos.m_latencyBudget.hasChanged)
+    if(m_qos.m_latencyBudget.sendAlways() ||  m_qos.m_latencyBudget.hasChanged())
     {
         LatencyBudgetQosPolicy*p = new LatencyBudgetQosPolicy();
         *p = m_qos.m_latencyBudget;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_durability.sendAlways() ||  m_qos.m_liveliness.hasChanged)
+    if(m_qos.m_durability.sendAlways() ||  m_qos.m_liveliness.hasChanged())
     {
         LivelinessQosPolicy*p = new LivelinessQosPolicy();
         *p = m_qos.m_liveliness;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_reliability.sendAlways() ||  m_qos.m_reliability.hasChanged)
+    if(m_qos.m_reliability.sendAlways() ||  m_qos.m_reliability.hasChanged())
     {
         ReliabilityQosPolicy*p = new ReliabilityQosPolicy();
         *p = m_qos.m_reliability;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_lifespan.sendAlways() ||  m_qos.m_lifespan.hasChanged)
+    if(m_qos.m_lifespan.sendAlways() ||  m_qos.m_lifespan.hasChanged())
     {
         LifespanQosPolicy*p = new LifespanQosPolicy();
         *p = m_qos.m_lifespan;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if( m_qos.m_userData.sendAlways() || m_qos.m_userData.hasChanged)
+    if( m_qos.m_userData.sendAlways() || m_qos.m_userData.hasChanged())
     {
         UserDataQosPolicy*p = new UserDataQosPolicy();
         *p = m_qos.m_userData;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_timeBasedFilter.sendAlways() ||  m_qos.m_timeBasedFilter.hasChanged)
+    if(m_qos.m_timeBasedFilter.sendAlways() ||  m_qos.m_timeBasedFilter.hasChanged())
     {
         TimeBasedFilterQosPolicy*p = new TimeBasedFilterQosPolicy();
         *p = m_qos.m_timeBasedFilter;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_ownership.sendAlways() ||  m_qos.m_ownership.hasChanged)
+    if(m_qos.m_ownership.sendAlways() ||  m_qos.m_ownership.hasChanged())
     {
         OwnershipQosPolicy*p = new OwnershipQosPolicy();
         *p = m_qos.m_ownership;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_durability.sendAlways() ||  m_qos.m_ownershipStrength.hasChanged)
+    if(m_qos.m_durability.sendAlways() ||  m_qos.m_ownershipStrength.hasChanged())
     {
         OwnershipStrengthQosPolicy*p = new OwnershipStrengthQosPolicy();
         *p = m_qos.m_ownershipStrength;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_destinationOrder.sendAlways() ||  m_qos.m_destinationOrder.hasChanged)
+    if(m_qos.m_destinationOrder.sendAlways() ||  m_qos.m_destinationOrder.hasChanged())
     {
         DestinationOrderQosPolicy*p = new DestinationOrderQosPolicy();
         *p = m_qos.m_destinationOrder;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_presentation.sendAlways() ||  m_qos.m_presentation.hasChanged)
+    if(m_qos.m_presentation.sendAlways() ||  m_qos.m_presentation.hasChanged())
     {
         PresentationQosPolicy*p = new PresentationQosPolicy();
         *p = m_qos.m_presentation;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_partition.sendAlways() ||  m_qos.m_partition.hasChanged)
+    if(m_qos.m_partition.sendAlways() ||  m_qos.m_partition.hasChanged())
     {
         PartitionQosPolicy*p = new PartitionQosPolicy();
         *p = m_qos.m_partition;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_topicData.sendAlways() || m_qos.m_topicData.hasChanged)
+    if(m_qos.m_topicData.sendAlways() || m_qos.m_topicData.hasChanged())
     {
         TopicDataQosPolicy*p = new TopicDataQosPolicy();
         *p = m_qos.m_topicData;
         parameter_list.m_parameters.push_back((Parameter_t*)p);
     }
-    if(m_qos.m_groupData.sendAlways() ||  m_qos.m_groupData.hasChanged)
+    if(m_qos.m_groupData.sendAlways() ||  m_qos.m_groupData.hasChanged())
     {
         GroupDataQosPolicy*p = new GroupDataQosPolicy();
         *p = m_qos.m_groupData;
@@ -277,7 +277,7 @@ ParameterList_t WriterProxyData::toParameterList()
     }
 #endif
 
-    if (m_qos.m_dataRepresentation.sendAlways() || m_qos.m_dataRepresentation.hasChanged)
+    if (m_qos.m_dataRepresentation.sendAlways() || m_qos.m_dataRepresentation.hasChanged())
     {
         DataRepresentationQosPolicy*p = new DataRepresentationQosPolicy();
         *p = m_qos.m_dataRepresentation;
@@ -584,5 +584,3 @@ RemoteWriterAttributes WriterProxyData::toRemoteWriterAttributes() const
 }
 } /* namespace rtps */
 } /* namespace eprosima */
-
-

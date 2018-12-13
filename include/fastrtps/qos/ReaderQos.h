@@ -91,6 +91,12 @@ public:
     DataRepresentationQosPolicy m_dataRepresentation;
     //!Type consistency enforcement Qos, NOT implemented in the library.
     TypeConsistencyEnforcementQosPolicy m_typeConsistency;
+	//!Type Identifier XTYPES 1.1
+	TypeIdV1 type_id;
+	//!Type Object XTYPES 1.1
+	TypeObjectV1 type;
+	//!XTYPES 1.2
+	XTypes::TypeInformation type_information;
     /**
 	 * Set Qos from another class
 	 * @param readerqos Reference from a ReaderQos object.

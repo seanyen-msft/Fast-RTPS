@@ -32,6 +32,8 @@ public:
 
     ~TypeObjectFactory();
 
+    RTPS_DllAPI const TypeInformation* GetTypeInformation(const std::string &type_name) const;
+
     RTPS_DllAPI const TypeObject* GetTypeObject(const std::string &type_name, bool complete = false) const;
     RTPS_DllAPI const TypeObject* GetTypeObject(const TypeIdentifier* identifier) const;
 
@@ -75,6 +77,9 @@ protected:
     const TypeIdentifier* TryGetComplete(const TypeIdentifier* identifier) const;
     const TypeIdentifier* GetStoredTypeIdentifier(const TypeIdentifier *identifier) const;
     void nullifyAllEntries(const TypeIdentifier *identifier);
+
+    void FillMinimalInformation(TypeInformation *info, const TypeIdentifier* ident, const TypeObject* obj) const;
+    void FillCompleteInformation(TypeInformation *info, const TypeIdentifier* ident, const TypeObject* obj) const;
 private:
     mutable std::recursive_mutex m_MutexIdentifiers;
     mutable std::recursive_mutex m_MutexObjects;

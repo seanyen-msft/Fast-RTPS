@@ -302,6 +302,21 @@ class WriterProxyData
             return m_type;
         }
 
+        RTPS_DllAPI void type_information(const XTypes::TypeInformation& type_information)
+        {
+            m_type_information = type_information;
+        }
+
+        RTPS_DllAPI XTypes::TypeInformation type_information() const
+        {
+            return m_type_information;
+        }
+
+        RTPS_DllAPI XTypes::TypeInformation& type_information()
+        {
+            return m_type_information;
+        }
+
         RTPS_DllAPI void topicDiscoveryKind(TopicDiscoveryKind_t topicDiscoveryKind)
         {
             m_topicDiscoveryKind = topicDiscoveryKind;
@@ -391,6 +406,9 @@ class WriterProxyData
 
         //!Type Object
         TypeObjectV1 m_type;
+
+        //!Type Information
+        XTypes::TypeInformation m_type_information;
 };
 
 }
