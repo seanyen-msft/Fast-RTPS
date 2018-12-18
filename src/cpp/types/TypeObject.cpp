@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <fastrtps/qos/QosPolicies.h>
 #include <fastrtps/types/TypeObject.h>
 #include <fastcdr/exceptions/BadParamException.h>
 #include <fastcdr/Cdr.h>
@@ -90,6 +91,14 @@ void CommonStructMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_type_id;
 }
 
+bool CommonStructMember::consistent(const CommonStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_member_id == x.m_member_id
+        && m_member_type_id.consistent(x.m_member_type_id, localConsistency, remoteConsistency);
+}
+
 CompleteMemberDetail::CompleteMemberDetail()
 {
 }
@@ -160,6 +169,14 @@ void CompleteMemberDetail::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_ann_custom;
 }
 
+bool CompleteMemberDetail::consistent(const CompleteMemberDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && localConsistency.m_ignore_member_names)
+        || m_name == x.m_name;
+}
+
 MinimalMemberDetail::MinimalMemberDetail()
 {
 }
@@ -209,6 +226,14 @@ void MinimalMemberDetail::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalMemberDetail::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_name_hash;
+}
+
+bool MinimalMemberDetail::consistent(const MinimalMemberDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && localConsistency.m_ignore_member_names)
+        || m_name_hash == x.m_name_hash;
 }
 
 CompleteStructMember::CompleteStructMember()
@@ -269,6 +294,14 @@ void CompleteStructMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteStructMember::consistent(const CompleteStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalStructMember::MinimalStructMember()
 {
 }
@@ -327,6 +360,14 @@ void MinimalStructMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool MinimalStructMember::consistent(const MinimalStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 AppliedBuiltinTypeAnnotations::AppliedBuiltinTypeAnnotations()
 {
 }
@@ -378,6 +419,14 @@ void AppliedBuiltinTypeAnnotations::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_verbatim;
 }
 
+bool AppliedBuiltinTypeAnnotations::consistent(const AppliedBuiltinTypeAnnotations&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO Annotations
+    return true;
+}
+
 MinimalTypeDetail::MinimalTypeDetail()
 {
 }
@@ -416,6 +465,13 @@ void MinimalTypeDetail::serialize(eprosima::fastcdr::Cdr &) const
 
 void MinimalTypeDetail::deserialize(eprosima::fastcdr::Cdr &)
 {
+}
+
+bool MinimalTypeDetail::consistent(const MinimalTypeDetail&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return true;
 }
 
 CompleteTypeDetail::CompleteTypeDetail()
@@ -487,6 +543,16 @@ void CompleteTypeDetail::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_type_name;
 }
 
+bool CompleteTypeDetail::consistent(const CompleteTypeDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO annotations?
+    // Isn't a member name, but makes sense to apply here?
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && localConsistency.m_ignore_member_names)
+        || m_type_name == x.m_type_name;
+}
+
 CompleteStructHeader::CompleteStructHeader()
 {
 }
@@ -545,6 +611,14 @@ void CompleteStructHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteStructHeader::consistent(const CompleteStructHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_base_type.consistent(x.m_base_type, localConsistency, remoteConsistency);
+}
+
 MinimalStructHeader::MinimalStructHeader()
 {
 }
@@ -601,6 +675,14 @@ void MinimalStructHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_base_type;
     dcdr >> m_detail;
+}
+
+bool MinimalStructHeader::consistent(const MinimalStructHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_base_type.consistent(x.m_base_type, localConsistency, remoteConsistency);
 }
 
 CompleteStructType::CompleteStructType()
@@ -672,6 +754,73 @@ void CompleteStructType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_seq;
 }
 
+bool CompleteStructType::consistent(const CompleteStructType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_member_seq.size() != x.m_member_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all members consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else // TODO Any Qos prevent this? I didn't see it
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (remote_it != x.m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All members consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 MinimalStructType::MinimalStructType()
 {
 }
@@ -739,6 +888,73 @@ void MinimalStructType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_struct_flags;
     dcdr >> m_header;
     dcdr >> m_member_seq;
+}
+
+bool MinimalStructType::consistent(const MinimalStructType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_member_seq.size() != x.m_member_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all members consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else // TODO Any Qos prevent this? I didn't see it
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (remote_it != x.m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All members consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
 }
 
 CommonUnionMember::CommonUnionMember()
@@ -818,6 +1034,35 @@ void CommonUnionMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_label_seq;
 }
 
+bool CommonUnionMember::consistent(const CommonUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_member_id == x.m_member_id)
+    {
+        if (m_type_id.consistent(x.m_type_id, localConsistency, remoteConsistency))
+        {
+            if (m_label_seq.size() == x.m_label_seq.size())
+            {
+                auto local_it = m_label_seq.begin();
+                auto remote_it = x.m_label_seq.begin();
+                while (local_it != m_label_seq.end())
+                {
+                    if (*local_it != *remote_it)
+                    {
+                        return false; // Label inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all labels consistent
+            }
+            return false; // different sizes
+        }
+    }
+    return false; // MemberId or type inconsistent
+}
+
 CompleteUnionMember::CompleteUnionMember()
 {
 }
@@ -874,6 +1119,14 @@ void CompleteUnionMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
     dcdr >> m_detail;
+}
+
+bool CompleteUnionMember::consistent(const CompleteUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 MinimalUnionMember::MinimalUnionMember()
@@ -934,6 +1187,14 @@ void MinimalUnionMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool MinimalUnionMember::consistent(const MinimalUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 CommonDiscriminatorMember::CommonDiscriminatorMember()
 {
 }
@@ -990,6 +1251,13 @@ void CommonDiscriminatorMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_member_flags;
     dcdr >> m_type_id;
+}
+
+bool CommonDiscriminatorMember::consistent(const CommonDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_type_id.consistent(x.m_type_id, localConsistency, remoteConsistency);
 }
 
 CompleteDiscriminatorMember::CompleteDiscriminatorMember()
@@ -1062,6 +1330,14 @@ void CompleteDiscriminatorMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_ann_custom;
 }
 
+bool CompleteDiscriminatorMember::consistent(const CompleteDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    // TODO Annotations?
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalDiscriminatorMember::MinimalDiscriminatorMember()
 {
 }
@@ -1111,6 +1387,13 @@ void MinimalDiscriminatorMember::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalDiscriminatorMember::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
+}
+
+bool MinimalDiscriminatorMember::consistent(const MinimalDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 CompleteUnionHeader::CompleteUnionHeader()
@@ -1164,6 +1447,13 @@ void CompleteUnionHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteUnionHeader::consistent(const CompleteUnionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency);
+}
+
 MinimalUnionHeader::MinimalUnionHeader()
 {
 }
@@ -1213,6 +1503,13 @@ void MinimalUnionHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalUnionHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_detail;
+}
+
+bool MinimalUnionHeader::consistent(const MinimalUnionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency);
 }
 
 CompleteUnionType::CompleteUnionType()
@@ -1292,6 +1589,74 @@ void CompleteUnionType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_seq;
 }
 
+bool CompleteUnionType::consistent(const CompleteUnionType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+            && m_discriminator.consistent(x.m_discriminator, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_member_seq.size() != x.m_member_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all members consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (remote_it != x.m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All members consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 MinimalUnionType::MinimalUnionType()
 {
 }
@@ -1369,6 +1734,74 @@ void MinimalUnionType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_seq;
 }
 
+bool MinimalUnionType::consistent(const MinimalUnionType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+            && m_discriminator.consistent(x.m_discriminator, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_member_seq.size() != x.m_member_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all members consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_member_seq.size() <= x.m_member_seq.size())
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (local_it != m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_member_seq.begin();
+                auto remote_it = x.m_member_seq.begin();
+                while (remote_it != x.m_member_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Member inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All members consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 CommonAnnotationParameter::CommonAnnotationParameter()
 {
 }
@@ -1425,6 +1858,14 @@ void CommonAnnotationParameter::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_member_flags;
     dcdr >> m_member_type_id;
+}
+
+bool CommonAnnotationParameter::consistent(const CommonAnnotationParameter&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
 }
 
 CompleteAnnotationParameter::CompleteAnnotationParameter()
@@ -1492,6 +1933,14 @@ void CompleteAnnotationParameter::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_default_value;
 }
 
+bool CompleteAnnotationParameter::consistent(const CompleteAnnotationParameter&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
+}
+
 MinimalAnnotationParameter::MinimalAnnotationParameter()
 {
 }
@@ -1557,6 +2006,14 @@ void MinimalAnnotationParameter::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_default_value;
 }
 
+bool MinimalAnnotationParameter::consistent(const MinimalAnnotationParameter&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
+}
+
 CompleteAnnotationHeader::CompleteAnnotationHeader()
 {
 }
@@ -1608,6 +2065,14 @@ void CompleteAnnotationHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_annotation_name;
 }
 
+bool CompleteAnnotationHeader::consistent(const CompleteAnnotationHeader&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
+}
+
 MinimalAnnotationHeader::MinimalAnnotationHeader()
 {
 }
@@ -1647,6 +2112,14 @@ void MinimalAnnotationHeader::serialize(eprosima::fastcdr::Cdr &) const
 
 void MinimalAnnotationHeader::deserialize(eprosima::fastcdr::Cdr &)
 {
+}
+
+bool MinimalAnnotationHeader::consistent(const MinimalAnnotationHeader&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
 }
 
 CompleteAnnotationType::CompleteAnnotationType()
@@ -1719,6 +2192,14 @@ void CompleteAnnotationType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_seq;
 }
 
+bool CompleteAnnotationType::consistent(const CompleteAnnotationType&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
+}
+
 MinimalAnnotationType::MinimalAnnotationType()
 {
 }
@@ -1789,6 +2270,14 @@ void MinimalAnnotationType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_member_seq;
 }
 
+bool MinimalAnnotationType::consistent(const MinimalAnnotationType&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO This is an annotation, implement if finally is needed
+    return true;
+}
+
 CommonAliasBody::CommonAliasBody()
 {
 }
@@ -1845,6 +2334,13 @@ void CommonAliasBody::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_related_flags;
     dcdr >> m_related_type;
+}
+
+bool CommonAliasBody::consistent(const CommonAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_related_type.consistent(x.m_related_type, localConsistency, remoteConsistency);
 }
 
 CompleteAliasBody::CompleteAliasBody()
@@ -1917,6 +2413,14 @@ void CompleteAliasBody::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_ann_custom;
 }
 
+bool CompleteAliasBody::consistent(const CompleteAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    // TODO Annotations?
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalAliasBody::MinimalAliasBody()
 {
 }
@@ -1966,6 +2470,13 @@ void MinimalAliasBody::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalAliasBody::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
+}
+
+bool MinimalAliasBody::consistent(const MinimalAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 CompleteAliasHeader::CompleteAliasHeader()
@@ -2019,6 +2530,13 @@ void CompleteAliasHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteAliasHeader::consistent(const CompleteAliasHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency);
+}
+
 MinimalAliasHeader::MinimalAliasHeader()
 {
 }
@@ -2058,6 +2576,13 @@ void MinimalAliasHeader::serialize(eprosima::fastcdr::Cdr &) const
 
 void MinimalAliasHeader::deserialize(eprosima::fastcdr::Cdr &)
 {
+}
+
+bool MinimalAliasHeader::consistent(const MinimalAliasHeader&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return true;
 }
 
 CompleteAliasType::CompleteAliasType()
@@ -2125,6 +2650,14 @@ void CompleteAliasType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_body;
 }
 
+bool CompleteAliasType::consistent(const CompleteAliasType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_body.consistent(x.m_body, localConsistency, remoteConsistency);
+}
+
 MinimalAliasType::MinimalAliasType()
 {
 }
@@ -2190,6 +2723,14 @@ void MinimalAliasType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_body;
 }
 
+bool MinimalAliasType::consistent(const MinimalAliasType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_body.consistent(x.m_body, localConsistency, remoteConsistency);
+}
+
 CompleteElementDetail::CompleteElementDetail()
 {
 }
@@ -2253,6 +2794,14 @@ void CompleteElementDetail::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_ann_custom;
 }
 
+bool CompleteElementDetail::consistent(const CompleteElementDetail&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO Annotation consistency?
+    return true;
+}
+
 CommonCollectionElement::CommonCollectionElement()
 {
 }
@@ -2309,6 +2858,13 @@ void CommonCollectionElement::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_element_flags;
     dcdr >> m_type;
+}
+
+bool CommonCollectionElement::consistent(const CommonCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_type.consistent(x.m_type, localConsistency, remoteConsistency);
 }
 
 CompleteCollectionElement::CompleteCollectionElement()
@@ -2369,6 +2925,14 @@ void CompleteCollectionElement::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteCollectionElement::consistent(const CompleteCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalCollectionElement::MinimalCollectionElement()
 {
 }
@@ -2420,6 +2984,13 @@ void MinimalCollectionElement::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_common;
 }
 
+bool MinimalCollectionElement::consistent(const MinimalCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 CommonCollectionHeader::CommonCollectionHeader()
 {
 }
@@ -2469,6 +3040,14 @@ void CommonCollectionHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void CommonCollectionHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_bound;
+}
+
+bool CommonCollectionHeader::consistent(const CommonCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && localConsistency.m_ignore_sequence_bounds)
+        || m_bound >= x.m_bound;
 }
 
 CompleteCollectionHeader::CompleteCollectionHeader()
@@ -2529,6 +3108,14 @@ void CompleteCollectionHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteCollectionHeader::consistent(const CompleteCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalCollectionHeader::MinimalCollectionHeader()
 {
 }
@@ -2578,6 +3165,13 @@ void MinimalCollectionHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalCollectionHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
+}
+
+bool MinimalCollectionHeader::consistent(const MinimalCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 CompleteSequenceType::CompleteSequenceType()
@@ -2656,6 +3250,14 @@ void CompleteSequenceType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_element;
 }
 
+bool CompleteSequenceType::consistent(const CompleteSequenceType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
+}
+
 MinimalSequenceType::MinimalSequenceType()
 {
 }
@@ -2732,6 +3334,14 @@ void MinimalSequenceType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_element;
 }
 
+bool MinimalSequenceType::consistent(const MinimalSequenceType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
+}
+
 CommonArrayHeader::CommonArrayHeader()
 {
 }
@@ -2785,6 +3395,30 @@ void CommonArrayHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void CommonArrayHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_bound_seq;
+}
+
+bool CommonArrayHeader::consistent(const CommonArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO Does prevent_type_widening apply here?
+    if (m_bound_seq.size() == x.m_bound_seq.size()) // TODO In Arrays, == or <=?
+    {
+        auto local_it = m_bound_seq.begin();
+        auto remote_it = x.m_bound_seq.begin();
+        while (local_it != m_bound_seq.end())
+        {
+            if (*local_it != *remote_it)
+            {
+                return false; // Bound inconsistent
+            }
+            ++local_it;
+            ++remote_it;
+        }
+        return true; // Same size, all bounds consistent
+    }
+    return false; // different sizes
+
 }
 
 CompleteArrayHeader::CompleteArrayHeader()
@@ -2845,6 +3479,14 @@ void CompleteArrayHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteArrayHeader::consistent(const CompleteArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalArrayHeader::MinimalArrayHeader()
 {
 }
@@ -2894,6 +3536,13 @@ void MinimalArrayHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalArrayHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
+}
+
+bool MinimalArrayHeader::consistent(const MinimalArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 CompleteArrayType::CompleteArrayType()
@@ -2961,6 +3610,14 @@ void CompleteArrayType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_element;
 }
 
+bool CompleteArrayType::consistent(const CompleteArrayType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
+}
+
 MinimalArrayType::MinimalArrayType()
 {
 }
@@ -3024,6 +3681,14 @@ void MinimalArrayType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_collection_flag;
     dcdr >> m_header;
     dcdr >> m_element;
+}
+
+bool MinimalArrayType::consistent(const MinimalArrayType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
 }
 
 CompleteMapType::CompleteMapType()
@@ -3098,6 +3763,15 @@ void CompleteMapType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_element;
 }
 
+bool CompleteMapType::consistent(const CompleteMapType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_key.consistent(x.m_key, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
+}
+
 MinimalMapType::MinimalMapType()
 {
 }
@@ -3170,6 +3844,15 @@ void MinimalMapType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_element;
 }
 
+bool MinimalMapType::consistent(const MinimalMapType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_header.consistent(x.m_header, localConsistency, remoteConsistency)
+        && m_key.consistent(x.m_key, localConsistency, remoteConsistency)
+        && m_element.consistent(x.m_element, localConsistency, remoteConsistency);
+}
+
 CommonEnumeratedLiteral::CommonEnumeratedLiteral()
 {
 }
@@ -3226,6 +3909,13 @@ void CommonEnumeratedLiteral::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_value;
     dcdr >> m_flags;
+}
+
+bool CommonEnumeratedLiteral::consistent(const CommonEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return m_value == x.m_value;
 }
 
 CompleteEnumeratedLiteral::CompleteEnumeratedLiteral()
@@ -3286,6 +3976,14 @@ void CompleteEnumeratedLiteral::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteEnumeratedLiteral::consistent(const CompleteEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalEnumeratedLiteral::MinimalEnumeratedLiteral()
 {
 }
@@ -3344,6 +4042,14 @@ void MinimalEnumeratedLiteral::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool MinimalEnumeratedLiteral::consistent(const MinimalEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 CommonEnumeratedHeader::CommonEnumeratedHeader()
 {
 }
@@ -3393,6 +4099,15 @@ void CommonEnumeratedHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void CommonEnumeratedHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_bit_bound;
+}
+
+bool CommonEnumeratedHeader::consistent(const CommonEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO type widening applies here?
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && !localConsistency.m_prevent_type_widening)
+        || m_bit_bound == x.m_bit_bound;
 }
 
 CompleteEnumeratedHeader::CompleteEnumeratedHeader()
@@ -3453,6 +4168,14 @@ void CompleteEnumeratedHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteEnumeratedHeader::consistent(const CompleteEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalEnumeratedHeader::MinimalEnumeratedHeader()
 {
 }
@@ -3502,6 +4225,13 @@ void MinimalEnumeratedHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void MinimalEnumeratedHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
+}
+
+bool MinimalEnumeratedHeader::consistent(const MinimalEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 CompleteEnumeratedType::CompleteEnumeratedType()
@@ -3574,6 +4304,73 @@ void CompleteEnumeratedType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_literal_seq;
 }
 
+bool CompleteEnumeratedType::consistent(const CompleteEnumeratedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_literal_seq.size() != x.m_literal_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_literal_seq.size() <= x.m_literal_seq.size())
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (local_it != m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all literals consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_literal_seq.size() <= x.m_literal_seq.size())
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (local_it != m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (remote_it != x.m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All literals consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 MinimalEnumeratedType::MinimalEnumeratedType()
 {
 }
@@ -3644,6 +4441,73 @@ void MinimalEnumeratedType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_literal_seq;
 }
 
+bool MinimalEnumeratedType::consistent(const MinimalEnumeratedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_literal_seq.size() != x.m_literal_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_literal_seq.size() <= x.m_literal_seq.size())
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (local_it != m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all literals consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_literal_seq.size() <= x.m_literal_seq.size())
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (local_it != m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_literal_seq.begin();
+                auto remote_it = x.m_literal_seq.begin();
+                while (remote_it != x.m_literal_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Literal inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All literals consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 CommonBitflag::CommonBitflag()
 {
 }
@@ -3700,6 +4564,13 @@ void CommonBitflag::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_position;
     dcdr >> m_flags;
+}
+
+bool CommonBitflag::consistent(const CommonBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return m_position == x.m_position;
 }
 
 CompleteBitflag::CompleteBitflag()
@@ -3760,6 +4631,14 @@ void CompleteBitflag::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteBitflag::consistent(const CompleteBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 MinimalBitflag::MinimalBitflag()
 {
 }
@@ -3818,6 +4697,14 @@ void MinimalBitflag::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool MinimalBitflag::consistent(const MinimalBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+}
+
 CommonBitmaskHeader::CommonBitmaskHeader()
 {
 }
@@ -3867,6 +4754,15 @@ void CommonBitmaskHeader::serialize(eprosima::fastcdr::Cdr &scdr) const
 void CommonBitmaskHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_bit_bound;
+}
+
+bool CommonBitmaskHeader::consistent(const CommonBitmaskHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO type widening applies here?
+    return (localConsistency.m_kind == ALLOW_TYPE_COERCION && !localConsistency.m_prevent_type_widening)
+        || m_bit_bound == x.m_bit_bound;
 }
 
 CompleteBitmaskType::CompleteBitmaskType()
@@ -3939,6 +4835,73 @@ void CompleteBitmaskType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_flag_seq;
 }
 
+bool CompleteBitmaskType::consistent(const CompleteBitmaskType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_flag_seq.size() != x.m_flag_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_flag_seq.size() <= x.m_flag_seq.size())
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (local_it != m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all flags consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_flag_seq.size() <= x.m_flag_seq.size())
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (local_it != m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (remote_it != x.m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All flags consistent (size doesn't matter)
+        }
+    }
+    return false; // Header non consistent
+}
+
 MinimalBitmaskType::MinimalBitmaskType()
 {
 }
@@ -4007,6 +4970,73 @@ void MinimalBitmaskType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_bitmask_flags;
     dcdr >> m_header;
     dcdr >> m_flag_seq;
+}
+
+bool MinimalBitmaskType::consistent(const MinimalBitmaskType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_flag_seq.size() != x.m_flag_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_flag_seq.size() <= x.m_flag_seq.size())
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (local_it != m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all flags consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_flag_seq.size() <= x.m_flag_seq.size())
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (local_it != m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_flag_seq.begin();
+                auto remote_it = x.m_flag_seq.begin();
+                while (remote_it != x.m_flag_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Flag inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All flags consistent (size doesn't matter)
+        }
+    }
+    return false; // Header non consistent
 }
 
 CommonBitfield::CommonBitfield()
@@ -4081,6 +5111,16 @@ void CommonBitfield::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_holder_type;
 }
 
+bool CommonBitfield::consistent(const CommonBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    // TODO Not sure about bitcount...
+    return (m_position == x.m_position
+        && m_bitcount == x.m_bitcount
+        && m_holder_type == x.m_holder_type);
+}
+
 CompleteBitfield::CompleteBitfield()
 {
 }
@@ -4137,6 +5177,14 @@ void CompleteBitfield::deserialize(eprosima::fastcdr::Cdr &dcdr)
 {
     dcdr >> m_common;
     dcdr >> m_detail;
+}
+
+bool CompleteBitfield::consistent(const CompleteBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency)
+        && m_common.consistent(x.m_common, localConsistency, remoteConsistency);
 }
 
 MinimalBitfield::MinimalBitfield()
@@ -4197,6 +5245,18 @@ void MinimalBitfield::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_name_hash;
 }
 
+bool MinimalBitfield::consistent(const MinimalBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if ((localConsistency.m_kind == ALLOW_TYPE_COERCION && localConsistency.m_ignore_member_names)
+            || m_name_hash == x.m_name_hash)
+    {
+        return m_common.consistent(x.m_common, localConsistency, remoteConsistency);
+    }
+    return false;
+}
+
 CompleteBitsetHeader::CompleteBitsetHeader()
 {
 }
@@ -4248,6 +5308,13 @@ void CompleteBitsetHeader::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_detail;
 }
 
+bool CompleteBitsetHeader::consistent(const CompleteBitsetHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    return m_detail.consistent(x.m_detail, localConsistency, remoteConsistency);
+}
+
 MinimalBitsetHeader::MinimalBitsetHeader()
 {
 }
@@ -4287,6 +5354,13 @@ void MinimalBitsetHeader::serialize(eprosima::fastcdr::Cdr &) const
 
 void MinimalBitsetHeader::deserialize(eprosima::fastcdr::Cdr &)
 {
+}
+
+bool MinimalBitsetHeader::consistent(const MinimalBitsetHeader&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return true;
 }
 
 CompleteBitsetType::CompleteBitsetType()
@@ -4359,6 +5433,73 @@ void CompleteBitsetType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_field_seq;
 }
 
+bool CompleteBitsetType::consistent(const CompleteBitsetType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_field_seq.size() != x.m_field_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_field_seq.size() <= x.m_field_seq.size())
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (local_it != m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all fields consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_field_seq.size() <= x.m_field_seq.size())
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (local_it != m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (remote_it != x.m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All fields consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 MinimalBitsetType::MinimalBitsetType()
 {
 }
@@ -4429,6 +5570,73 @@ void MinimalBitsetType::deserialize(eprosima::fastcdr::Cdr &dcdr)
     dcdr >> m_field_seq;
 }
 
+bool MinimalBitsetType::consistent(const MinimalBitsetType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m_header.consistent(x.m_header, localConsistency, remoteConsistency))
+    {
+        if (localConsistency.m_kind == DISALLOW_TYPE_COERCION || localConsistency.m_prevent_type_widening)
+        {
+            if (localConsistency.m_kind == DISALLOW_TYPE_COERCION
+                && m_field_seq.size() != x.m_field_seq.size())
+            {
+                return false; // different sizes (coercion disallowed or type widening prevented)
+            }
+
+            if (m_field_seq.size() <= x.m_field_seq.size())
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (local_it != m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+                return true; // Same size, all fields consistent
+            }
+            return false; // different sizes (coercion disallowed or type widening prevented)
+        }
+        else
+        {
+            if (m_field_seq.size() <= x.m_field_seq.size())
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (local_it != m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            else
+            {
+                auto local_it = m_field_seq.begin();
+                auto remote_it = x.m_field_seq.begin();
+                while (remote_it != x.m_field_seq.end())
+                {
+                    if (!local_it->consistent(*remote_it, localConsistency, remoteConsistency))
+                    {
+                        return false; // Field inconsistent
+                    }
+                    ++local_it;
+                    ++remote_it;
+                }
+            }
+            return true; // All fields consistent (size doesn't matter)
+        }
+    }
+    return false; // header non consistent
+}
+
 CompleteExtendedType::CompleteExtendedType()
 {
 }
@@ -4470,6 +5678,13 @@ void CompleteExtendedType::deserialize(eprosima::fastcdr::Cdr &)
 {
 }
 
+bool CompleteExtendedType::consistent(const CompleteExtendedType&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return true;
+}
+
 MinimalExtendedType::MinimalExtendedType()
 {
 }
@@ -4509,6 +5724,13 @@ void MinimalExtendedType::serialize(eprosima::fastcdr::Cdr &) const
 
 void MinimalExtendedType::deserialize(eprosima::fastcdr::Cdr &)
 {
+}
+
+bool MinimalExtendedType::consistent(const MinimalExtendedType&,
+        const TypeConsistencyEnforcementQosPolicy&,
+        const TypeConsistencyEnforcementQosPolicy&) const
+{
+    return true;
 }
 
 TypeIdentifierTypeObjectPair::TypeIdentifierTypeObjectPair()
@@ -4629,6 +5851,7 @@ void TypeIdentifierPair::deserialize(eprosima::fastcdr::Cdr &dcdr)
 
 TypeIdentifierWithSize::TypeIdentifierWithSize()
 {
+    m_typeobject_serialized_size = 0;
 }
 
 TypeIdentifierWithSize::~TypeIdentifierWithSize()
@@ -4687,6 +5910,7 @@ void TypeIdentifierWithSize::deserialize(eprosima::fastcdr::Cdr &dcdr)
 
 TypeIdentifierWithDependencies::TypeIdentifierWithDependencies()
 {
+    m_dependent_typeid_count = -1;
 }
 
 TypeIdentifierWithDependencies::~TypeIdentifierWithDependencies()
@@ -5627,6 +6851,39 @@ void CompleteTypeObject::deserialize(eprosima::fastcdr::Cdr &cdr)
     }
 }
 
+bool CompleteTypeObject::consistent(const CompleteTypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m__d != x.m__d) return false;
+
+    switch(m__d)
+    {
+        case TK_ALIAS:
+            return m_alias_type.consistent(x.m_alias_type, localConsistency, remoteConsistency);
+        case TK_ANNOTATION:
+            return m_annotation_type.consistent(x.m_annotation_type, localConsistency, remoteConsistency);
+        case TK_STRUCTURE:
+            return m_struct_type.consistent(x.m_struct_type, localConsistency, remoteConsistency);
+        case TK_UNION:
+            return m_union_type.consistent(x.m_union_type, localConsistency, remoteConsistency);
+        case TK_BITSET:
+            return m_bitset_type.consistent(x.m_bitset_type, localConsistency, remoteConsistency);
+        case TK_SEQUENCE:
+            return m_sequence_type.consistent(x.m_sequence_type, localConsistency, remoteConsistency);
+        case TK_ARRAY:
+            return m_array_type.consistent(x.m_array_type, localConsistency, remoteConsistency);
+        case TK_MAP:
+            return m_map_type.consistent(x.m_map_type, localConsistency, remoteConsistency);
+        case TK_ENUM:
+            return m_enumerated_type.consistent(x.m_enumerated_type, localConsistency, remoteConsistency);
+        case TK_BITMASK:
+            return m_bitmask_type.consistent(x.m_bitmask_type, localConsistency, remoteConsistency);
+        default:
+            return m_extended_type.consistent(x.m_extended_type, localConsistency, remoteConsistency);
+    }
+}
+
 /****************************************************************************************************************/
 
 MinimalTypeObject::MinimalTypeObject()
@@ -6499,6 +7756,39 @@ void MinimalTypeObject::deserialize(eprosima::fastcdr::Cdr &cdr)
     }
 }
 
+bool MinimalTypeObject::consistent(const MinimalTypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m__d != x.m__d) return false;
+
+    switch(m__d)
+    {
+        case TK_ALIAS:
+            return m_alias_type.consistent(x.m_alias_type, localConsistency, remoteConsistency);
+        case TK_ANNOTATION:
+            return m_annotation_type.consistent(x.m_annotation_type, localConsistency, remoteConsistency);
+        case TK_STRUCTURE:
+            return m_struct_type.consistent(x.m_struct_type, localConsistency, remoteConsistency);
+        case TK_UNION:
+            return m_union_type.consistent(x.m_union_type, localConsistency, remoteConsistency);
+        case TK_BITSET:
+            return m_bitset_type.consistent(x.m_bitset_type, localConsistency, remoteConsistency);
+        case TK_SEQUENCE:
+            return m_sequence_type.consistent(x.m_sequence_type, localConsistency, remoteConsistency);
+        case TK_ARRAY:
+            return m_array_type.consistent(x.m_array_type, localConsistency, remoteConsistency);
+        case TK_MAP:
+            return m_map_type.consistent(x.m_map_type, localConsistency, remoteConsistency);
+        case TK_ENUM:
+            return m_enumerated_type.consistent(x.m_enumerated_type, localConsistency, remoteConsistency);
+        case TK_BITMASK:
+            return m_bitmask_type.consistent(x.m_bitmask_type, localConsistency, remoteConsistency);
+        default:
+            return m_extended_type.consistent(x.m_extended_type, localConsistency, remoteConsistency);
+    }
+}
+
 TypeObject::TypeObject()
 {
     m__d = 0x00; // Default
@@ -6687,6 +7977,33 @@ void TypeObject::minimal(MinimalTypeObject &&_minimal)
 {
     m_minimal = std::move(_minimal);
     m__d = EK_MINIMAL;
+}
+
+bool TypeObject::consistent(const TypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const
+{
+    if (m__d != x.m__d) return false;
+
+    switch(m__d)
+    {
+        case EK_COMPLETE:
+            return m_complete.consistent(x.m_complete, localConsistency, remoteConsistency);
+        case EK_MINIMAL:
+            return m_minimal.consistent(x.m_minimal, localConsistency, remoteConsistency);
+        default:
+            return false;
+    }
+
+
+//    if (localConsistency.m_kind == DISALLOW_TYPE_COERCION)
+//    {
+//
+//    }
+//    else
+//    {
+//
+//    }
 }
 
 const MinimalTypeObject& TypeObject::minimal() const

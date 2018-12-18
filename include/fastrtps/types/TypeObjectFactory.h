@@ -32,7 +32,7 @@ public:
 
     ~TypeObjectFactory();
 
-    RTPS_DllAPI const TypeInformation* GetTypeInformation(const std::string &type_name) const;
+    RTPS_DllAPI const TypeInformation* GetTypeInformation(const std::string &type_name);
 
     RTPS_DllAPI const TypeObject* GetTypeObject(const std::string &type_name, bool complete = false) const;
     RTPS_DllAPI const TypeObject* GetTypeObject(const TypeIdentifier* identifier) const;
@@ -71,6 +71,7 @@ protected:
     std::map<const std::string, const TypeIdentifier*> m_CompleteIdentifiers; // Only EK_COMPLETE
     std::map<const TypeIdentifier*, const TypeObject*> m_Objects; // EK_MINIMAL
     std::map<const TypeIdentifier*, const TypeObject*> m_CompleteObjects; // EK_COMPLETE
+    std::map<const TypeIdentifier*, TypeInformation*> m_Informations;
     std::map<std::string, std::string> m_Aliases; // Aliases
 
     DynamicType_ptr BuildDynamicType(TypeDescriptor &descriptor, const TypeObject* object) const;
@@ -78,11 +79,12 @@ protected:
     const TypeIdentifier* GetStoredTypeIdentifier(const TypeIdentifier *identifier) const;
     void nullifyAllEntries(const TypeIdentifier *identifier);
 
-    void FillMinimalInformation(TypeInformation *info, const TypeIdentifier* ident, const TypeObject* obj) const;
-    void FillCompleteInformation(TypeInformation *info, const TypeIdentifier* ident, const TypeObject* obj) const;
+    void FillMinimalInformation(TypeInformation *info, const TypeIdentifier* ident);
+    void FillCompleteInformation(TypeInformation *info, const TypeIdentifier* ident);
 private:
     mutable std::recursive_mutex m_MutexIdentifiers;
     mutable std::recursive_mutex m_MutexObjects;
+    mutable std::mutex m_MutexInformations;
 };
 
 } // namespace types

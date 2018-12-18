@@ -96,6 +96,8 @@ public:
     PublishModeQosPolicy m_publishMode;
     //!Data Representation Qos, implemented in the library.
     DataRepresentationQosPolicy m_dataRepresentation;
+    //!Type consistency enforcement Qos, NOT implemented in the library.
+    TypeConsistencyEnforcementQosPolicy m_typeConsistency;
 	//!Type Identifier XTYPES 1.1
 	TypeIdV1 type_id;
 	//!Type Object XTYPES 1.1

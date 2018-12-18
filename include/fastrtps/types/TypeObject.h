@@ -34,6 +34,8 @@ namespace eprosima
 namespace eprosima{
 namespace fastrtps{
 
+class TypeConsistencyEnforcementQosPolicy;
+
 using namespace rtps;
 
 namespace types{
@@ -72,6 +74,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonStructMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     MemberId m_member_id;
     StructMemberFlag m_member_flags;
@@ -113,6 +119,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteMemberDetail& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteMemberDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     MemberName m_name;
     AppliedBuiltinMemberAnnotations m_ann_builtin;
@@ -143,6 +153,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalMemberDetail& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalMemberDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     NameHash m_name_hash;
 };
@@ -176,6 +190,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteStructMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonStructMember m_common;
     CompleteMemberDetail m_detail;
@@ -213,6 +231,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalStructMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalStructMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonStructMember m_common;
     MinimalMemberDetail m_detail;
@@ -243,6 +265,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const AppliedBuiltinTypeAnnotations& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const AppliedBuiltinTypeAnnotations &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AppliedVerbatimAnnotation m_verbatim;
 };
@@ -264,6 +290,10 @@ public:
    RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalTypeDetail& data, size_t current_alignment = 0);
    RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
    RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalTypeDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 
@@ -301,6 +331,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteTypeDetail& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteTypeDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AppliedBuiltinTypeAnnotations m_ann_builtin;
     AppliedAnnotationSeq m_ann_custom;
@@ -334,6 +368,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteStructHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteStructHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     TypeIdentifier m_base_type;
     CompleteTypeDetail m_detail;
@@ -366,6 +404,10 @@ public:
    RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalStructHeader& data, size_t current_alignment = 0);
    RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
    RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalStructHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     TypeIdentifier m_base_type;
     MinimalTypeDetail m_detail;
@@ -405,6 +447,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteStructType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteStructType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     StructTypeFlag m_struct_flags;
     CompleteStructHeader m_header;
@@ -445,6 +491,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalStructType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalStructType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     StructTypeFlag m_struct_flags;
     MinimalStructHeader m_header;
@@ -497,6 +547,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonUnionMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     MemberId m_member_id;
     UnionMemberFlag m_member_flags;
@@ -533,6 +587,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteUnionMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonUnionMember m_common;
     CompleteMemberDetail m_detail;
@@ -570,6 +628,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalUnionMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalUnionMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonUnionMember m_common;
     MinimalMemberDetail m_detail;
@@ -606,6 +668,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonDiscriminatorMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     UnionDiscriminatorFlag m_member_flags;
     TypeIdentifier m_type_id;
@@ -646,6 +712,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteDiscriminatorMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonDiscriminatorMember m_common;
     AppliedBuiltinTypeAnnotations m_ann_builtin;
@@ -675,6 +745,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalDiscriminatorMember& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalDiscriminatorMember &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonDiscriminatorMember m_common;
 };
@@ -701,6 +775,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteUnionHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteUnionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CompleteTypeDetail m_detail;
 };
@@ -727,6 +805,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalUnionHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalUnionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     MinimalTypeDetail m_detail;
 };
@@ -771,6 +853,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteUnionType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteUnionType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     UnionTypeFlag m_union_flags;
     CompleteUnionHeader m_header;
@@ -818,6 +904,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalUnionType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalUnionType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     UnionTypeFlag m_union_flags;
     MinimalUnionHeader m_header;
@@ -854,6 +944,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonAnnotationParameter& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonAnnotationParameter &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AnnotationParameterFlag m_member_flags;
     TypeIdentifier m_member_type_id;
@@ -895,6 +989,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAnnotationParameter& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAnnotationParameter &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonAnnotationParameter m_common;
     MemberName m_name;
@@ -936,6 +1034,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAnnotationParameter& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAnnotationParameter &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonAnnotationParameter m_common;
     MemberName m_name;
@@ -966,6 +1068,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAnnotationHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAnnotationHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     QualifiedTypeName m_annotation_name;
 };
@@ -987,6 +1093,10 @@ public:
    RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAnnotationHeader& data, size_t current_alignment = 0);
    RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
    RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAnnotationHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 
@@ -1024,6 +1134,10 @@ public:
    RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAnnotationType& data, size_t current_alignment = 0);
    RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
    RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAnnotationType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AnnotationTypeFlag m_annotation_flag;
     CompleteAnnotationHeader m_header;
@@ -1063,6 +1177,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAnnotationType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAnnotationType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AnnotationTypeFlag m_annotation_flag;
     MinimalAnnotationHeader m_header;
@@ -1098,6 +1216,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonAliasBody& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AliasMemberFlag m_related_flags;
     TypeIdentifier m_related_type;
@@ -1137,6 +1259,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAliasBody& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonAliasBody m_common;
     AppliedBuiltinMemberAnnotations m_ann_builtin;
@@ -1165,6 +1291,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAliasBody& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAliasBody &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonAliasBody m_common;
 };
@@ -1191,6 +1321,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAliasHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAliasHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CompleteTypeDetail m_detail;
 };
@@ -1212,6 +1346,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAliasHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAliasHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 
@@ -1249,6 +1387,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteAliasType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteAliasType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AliasTypeFlag m_alias_flags;
     CompleteAliasHeader m_header;
@@ -1288,6 +1430,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalAliasType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalAliasType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AliasTypeFlag m_alias_flags;
     MinimalAliasHeader m_header;
@@ -1323,6 +1469,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteElementDetail& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteElementDetail &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     AppliedBuiltinMemberAnnotations m_ann_builtin;
     AppliedAnnotationSeq m_ann_custom;
@@ -1355,6 +1505,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonCollectionElement& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionElementFlag m_element_flags;
     TypeIdentifier m_type;
@@ -1388,6 +1542,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteCollectionElement& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonCollectionElement m_common;
     CompleteElementDetail m_detail;
@@ -1415,6 +1573,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalCollectionElement& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalCollectionElement &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonCollectionElement m_common;
 };
@@ -1441,6 +1603,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonCollectionHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     LBound m_bound;
 };
@@ -1473,6 +1639,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteCollectionHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonCollectionHeader m_common;
     CompleteTypeDetail m_detail;
@@ -1500,6 +1670,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalCollectionHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalCollectionHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonCollectionHeader m_common;
 };
@@ -1539,6 +1713,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteSequenceType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteSequenceType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     CompleteCollectionHeader m_header;
@@ -1579,6 +1757,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalSequenceType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalSequenceType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     MinimalCollectionHeader m_header;
@@ -1608,6 +1790,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonArrayHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     LBoundSeq m_bound_seq;
 };
@@ -1640,6 +1826,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteArrayHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonArrayHeader m_common;
     CompleteTypeDetail m_detail;
@@ -1667,6 +1857,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalArrayHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalArrayHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonArrayHeader m_common;
 };
@@ -1705,6 +1899,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteArrayType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteArrayType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     CompleteArrayHeader m_header;
@@ -1745,6 +1943,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalArrayType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalArrayType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     MinimalArrayHeader m_header;
@@ -1792,6 +1994,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteMapType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteMapType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     CompleteCollectionHeader m_header;
@@ -1838,6 +2044,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalMapType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalMapType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CollectionTypeFlag m_collection_flag;
     MinimalCollectionHeader m_header;
@@ -1878,6 +2088,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonEnumeratedLiteral& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     int32_t m_value;
     EnumeratedLiteralFlag m_flags;
@@ -1913,6 +2127,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteEnumeratedLiteral& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonEnumeratedLiteral m_common;
     CompleteMemberDetail m_detail;
@@ -1950,6 +2168,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalEnumeratedLiteral& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalEnumeratedLiteral &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonEnumeratedLiteral m_common;
     MinimalMemberDetail m_detail;
@@ -1980,6 +2202,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonEnumeratedHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitBound m_bit_bound;
 };
@@ -2012,6 +2238,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteEnumeratedHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonEnumeratedHeader m_common;
     CompleteTypeDetail m_detail;
@@ -2039,6 +2269,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalEnumeratedHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalEnumeratedHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonEnumeratedHeader m_common;
 };
@@ -2078,6 +2312,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteEnumeratedType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteEnumeratedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     EnumTypeFlag m_enum_flags;
     CompleteEnumeratedHeader m_header;
@@ -2118,6 +2356,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalEnumeratedType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalEnumeratedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     EnumTypeFlag m_enum_flags;
     MinimalEnumeratedHeader m_header;
@@ -2154,6 +2396,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonBitflag& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     uint16_t m_position;
     BitflagFlag m_flags;
@@ -2187,6 +2433,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteBitflag& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonBitflag m_common;
     CompleteMemberDetail m_detail;
@@ -2221,6 +2471,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalBitflag& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalBitflag &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonBitflag m_common;
     MinimalMemberDetail m_detail;
@@ -2251,6 +2505,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonBitmaskHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonBitmaskHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitBound m_bit_bound;
 };
@@ -2291,6 +2549,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteBitmaskType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteBitmaskType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitmaskTypeFlag m_bitmask_flags;
     CompleteBitmaskHeader m_header;
@@ -2331,6 +2593,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalBitmaskType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalBitmaskType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitmaskTypeFlag m_bitmask_flags;
     MinimalBitmaskHeader m_header;
@@ -2378,6 +2644,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CommonBitfield& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CommonBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     uint16_t m_position;
     BitsetMemberFlag m_flags;
@@ -2413,6 +2683,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteBitfield& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonBitfield m_common;
     CompleteMemberDetail m_detail;
@@ -2447,6 +2721,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalBitfield& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalBitfield &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CommonBitfield m_common;
     NameHash m_name_hash;
@@ -2475,6 +2753,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteBitsetHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteBitsetHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     CompleteTypeDetail m_detail;
 };
@@ -2496,6 +2778,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalBitsetHeader& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalBitsetHeader &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 /*struct CompleteBitsetType  {
@@ -2532,6 +2818,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteBitsetType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteBitsetType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitsetTypeFlag m_bitset_flags;
     CompleteBitsetHeader m_header;
@@ -2572,6 +2862,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalBitsetType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalBitsetType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     BitsetTypeFlag m_bitset_flags;
     MinimalBitsetHeader m_header;
@@ -2599,6 +2893,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteExtendedType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteExtendedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 
@@ -2619,6 +2917,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalExtendedType& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalExtendedType &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
 };
 
@@ -2683,6 +2985,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const CompleteTypeObject& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const CompleteTypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     octet m__d;
 
@@ -2760,6 +3066,10 @@ public:
     RTPS_DllAPI static size_t getCdrSerializedSize(const MinimalTypeObject& data, size_t current_alignment = 0);
     RTPS_DllAPI void serialize(eprosima::fastcdr::Cdr &cdr) const;
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
+
+    RTPS_DllAPI bool consistent(const MinimalTypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     octet m__d;
 
@@ -2911,18 +3221,13 @@ public:
     RTPS_DllAPI void deserialize(eprosima::fastcdr::Cdr &cdr);
 
     /*!
-
-     * depending on the buffer alignment.
-     * @param current_alignment Buffer alignment.
-     * @return Maximum serialized size.
+     * @brief This function check type consistency enforcement with the given TypeObject x.
+     * @param x TypeObject to check if can be assigned to the current instance.
+     * @param typeConsistency TypeConsistencyEnforcementQoSPolicy to apply.
      */
-    /*!
-
-     */
-    /*!
-     * @brief This function serializes the key members of an object using CDR serialization.
-     * @param cdr CDR serialization object.
-     */
+    RTPS_DllAPI bool consistent(const TypeObject &x,
+        const TypeConsistencyEnforcementQosPolicy& localConsistency,
+        const TypeConsistencyEnforcementQosPolicy& remoteConsistency) const;
 private:
     uint8_t m__d;
 
@@ -3039,13 +3344,13 @@ private:
     uint32_t m_typeobject_serialized_size;
 };
 
-typedef std::vector<TypeIdentifierWithSize> TypeIdentfierWithSizeSeq;
+typedef std::vector<TypeIdentifierWithSize> TypeIdentifierWithSizeSeq;
 
 /*struct TypeIdentifierWithDependencies {
 	TypeIdentifierWithSize            typeid_with_size;
 	// The total additional types related to minimal_type
 	int32_t                             dependent_typeid_count;
-	TypeIdentfierWithSizeSeq  dependent_typeids;
+	TypeIdentifierWithSizeSeq  dependent_typeids;
 };*/
 class TypeIdentifierWithDependencies
 {
@@ -3067,10 +3372,10 @@ public:
     RTPS_DllAPI inline const int32_t& dependent_typeid_count() const { return m_dependent_typeid_count; }
     RTPS_DllAPI inline int32_t& dependent_typeid_count() { return m_dependent_typeid_count; }
 
-    RTPS_DllAPI inline void dependent_typeids(const TypeIdentfierWithSizeSeq &_dependent_typeids) { m_dependent_typeids = _dependent_typeids; }
-    RTPS_DllAPI inline void dependent_typeids(TypeIdentfierWithSizeSeq &&_dependent_typeids) { m_dependent_typeids = std::move(_dependent_typeids); }
-    RTPS_DllAPI inline const TypeIdentfierWithSizeSeq& dependent_typeids() const { return m_dependent_typeids; }
-    RTPS_DllAPI inline TypeIdentfierWithSizeSeq& dependent_typeids() { return m_dependent_typeids; }
+    RTPS_DllAPI inline void dependent_typeids(const TypeIdentifierWithSizeSeq &_dependent_typeids) { m_dependent_typeids = _dependent_typeids; }
+    RTPS_DllAPI inline void dependent_typeids(TypeIdentifierWithSizeSeq &&_dependent_typeids) { m_dependent_typeids = std::move(_dependent_typeids); }
+    RTPS_DllAPI inline const TypeIdentifierWithSizeSeq& dependent_typeids() const { return m_dependent_typeids; }
+    RTPS_DllAPI inline TypeIdentifierWithSizeSeq& dependent_typeids() { return m_dependent_typeids; }
 
     // RTPS_DllAPI static size_t getMaxCdrSerializedSize(size_t current_alignment = 0);
     RTPS_DllAPI static size_t getCdrSerializedSize(const TypeIdentifierWithDependencies& data, size_t current_alignment = 0);
@@ -3079,7 +3384,7 @@ public:
 private:
     TypeIdentifierWithSize m_typeid_with_size;
     int32_t m_dependent_typeid_count;
-    TypeIdentfierWithSizeSeq m_dependent_typeids;
+    TypeIdentifierWithSizeSeq m_dependent_typeids;
 };
 
 typedef    std::vector<TypeIdentifierWithDependencies> TypeIdentifierWithDependenciesSeq;
