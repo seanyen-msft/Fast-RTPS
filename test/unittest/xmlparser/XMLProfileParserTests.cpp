@@ -406,6 +406,7 @@ TEST_F(XMLProfileParserTests, XMLParserSubscriber)
     EXPECT_EQ(subscriber_atts.historyMemoryPolicy, PREALLOCATED_WITH_REALLOC_MEMORY_MODE);
     EXPECT_EQ(subscriber_atts.getUserDefinedID(), 13);
     EXPECT_EQ(subscriber_atts.getEntityID(), 31);
+    EXPECT_EQ(subscriber_atts.matched_publisher_allocation, ResourceLimitedContainerConfig::fixed_size_configuration(10u));
 }
 
 TEST_F(XMLProfileParserTests, XMLParserDefaultSubscriberProfile)
@@ -470,6 +471,7 @@ TEST_F(XMLProfileParserTests, XMLParserDefaultSubscriberProfile)
     EXPECT_EQ(subscriber_atts.historyMemoryPolicy, PREALLOCATED_WITH_REALLOC_MEMORY_MODE);
     EXPECT_EQ(subscriber_atts.getUserDefinedID(), 13);
     EXPECT_EQ(subscriber_atts.getEntityID(), 31);
+    EXPECT_EQ(subscriber_atts.matched_publisher_allocation, ResourceLimitedContainerConfig::fixed_size_configuration(10u));
 }
 
 #if HAVE_SECURITY
