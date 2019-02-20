@@ -488,7 +488,9 @@ bool UDPTransportInterface::ReleaseInputChannel(const Locator_t& locator, const 
 Locator_t UDPTransportInterface::RemoteToMainLocal(const Locator_t& remote) const
 {
     if (!IsLocatorSupported(remote))
+    {
         return false;
+    }
 
     Locator_t mainLocal(remote);
     //memset(mainLocal.address, 0x00, sizeof(mainLocal.address));
@@ -500,7 +502,9 @@ bool UDPTransportInterface::Send(const octet* sendBuffer, uint32_t sendBufferSiz
 {
     std::unique_lock<std::recursive_mutex> scopedLock(mOutputMapMutex);
     if (!IsOutputChannelOpen(localLocator) || sendBufferSize > GetConfiguration()->sendBufferSize)
+    {
         return false;
+    }
 
     bool success = false;
     bool is_multicast_remote_address = IPLocator::isMulticast(remoteLocator);
@@ -508,7 +512,9 @@ bool UDPTransportInterface::Send(const octet* sendBuffer, uint32_t sendBufferSiz
     for (auto& socket : mOutputSockets)
     {
         if (is_multicast_remote_address || !socket->only_multicast_purpose())
+        {
             success |= SendThroughSocket(sendBuffer, sendBufferSize, remoteLocator, getRefFromPtr(socket->getSocket()));
+        }
     }
 
     return success;
