@@ -82,6 +82,7 @@ bool WriterHistory::add_change(CacheChange_t* a_change, WriteParams& wparams)
 
     ++m_lastCacheChangeSeqNum;
     a_change->sequenceNumber = m_lastCacheChangeSeqNum;
+    a_change->sourceTimestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
     if(&wparams != &WriteParams::WRITE_PARAM_DEFAULT)
     {
