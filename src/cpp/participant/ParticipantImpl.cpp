@@ -495,3 +495,8 @@ bool ParticipantImpl::get_remote_reader_info(
 {
     return mp_rtpsParticipant->get_remote_reader_info(readerGuid, returnedInfo);
 }
+
+ResourceEvent& ParticipantImpl::get_resource_event() const
+{
+    return mp_rtpsParticipant->get_resource_event();
+}
