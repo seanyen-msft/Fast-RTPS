@@ -75,14 +75,25 @@ static asio::ip::address_v6::bytes_type locatorToNative(const Locator_t& locator
 }
 
 UDPv6Transport::UDPv6Transport(const UDPv6TransportDescriptor& descriptor)
-    : mConfiguration_(descriptor)
+    : UDPTransportInterface(LOCATOR_KIND_UDPv6)
+    , mConfiguration_(descriptor)
 {
-    mTransportKind = LOCATOR_KIND_UDPv6;
     mSendBufferSize = descriptor.sendBufferSize;
     mReceiveBufferSize = descriptor.receiveBufferSize;
     for (const auto& interface : descriptor.interfaceWhiteList)
         mInterfaceWhiteList.emplace_back(ip::address_v6::from_string(interface));
 }
+
+UDPv6Transport::UDPv6Transport()
+    : UDPTransportInterface(LOCATOR_KIND_UDPv6)
+{
+}
+
+UDPv6Transport::~UDPv6Transport()
+{
+    Clean();
+}
+
 
 UDPv6TransportDescriptor::UDPv6TransportDescriptor()
     : UDPTransportDescriptor()
@@ -97,16 +108,6 @@ UDPv6TransportDescriptor::UDPv6TransportDescriptor(const UDPv6TransportDescripto
 TransportInterface* UDPv6TransportDescriptor::create_transport() const
 {
     return new UDPv6Transport(*this);
-}
-
-UDPv6Transport::UDPv6Transport()
-{
-    mTransportKind = LOCATOR_KIND_UDPv6;
-}
-
-UDPv6Transport::~UDPv6Transport()
-{
-    Clean();
 }
 
 bool UDPv6Transport::getDefaultMetatrafficMulticastLocators(LocatorList_t &locators,

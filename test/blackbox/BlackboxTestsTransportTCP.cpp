@@ -14,6 +14,7 @@
 
 #include "BlackboxTests.hpp"
 
+/*
 #include "TCPReqRepHelloWorldRequester.hpp"
 #include "TCPReqRepHelloWorldReplier.hpp"
 
@@ -355,3 +356,4 @@ BLACKBOXTEST(BlackBox, TCPMaxInitialPeer_P0_5_P4)
     ASSERT_TRUE(requester.is_matched());
     ASSERT_TRUE(replier.is_matched());
 }
+*/

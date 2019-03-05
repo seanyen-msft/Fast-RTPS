@@ -162,7 +162,7 @@ public:
     virtual bool OpenInputChannel(const Locator_t&, TransportReceiverInterface*, uint32_t) override;
 
     //! Opens a socket on the given address and port (as long as they are white listed).
-    virtual bool OpenOutputChannel(const Locator_t&) override;
+    virtual bool OpenOutputChannel(std::vector<SenderResource*>, const Locator_t&) override;
 
     /**
     * Converts a given remote locator (that is, a locator referring to a remote

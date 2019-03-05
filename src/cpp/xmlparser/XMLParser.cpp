@@ -19,8 +19,8 @@
 
 #include <fastrtps/transport/UDPv4TransportDescriptor.h>
 #include <fastrtps/transport/UDPv6TransportDescriptor.h>
-#include <fastrtps/transport/TCPv4TransportDescriptor.h>
-#include <fastrtps/transport/TCPv6TransportDescriptor.h>
+//#include <fastrtps/transport/TCPv4TransportDescriptor.h>
+//#include <fastrtps/transport/TCPv6TransportDescriptor.h>
 
 #include <fastrtps/xmlparser/XMLProfileManager.h>
 
@@ -319,6 +319,7 @@ XMLP_ret XMLParser::parseXMLTransportData(tinyxml2::XMLElement* p_root)
                 pUDPv6Desc->m_output_udp_socket = static_cast<uint16_t>(iSocket);
             }
         }
+        /*
         else if (sType == TCPv4)
         {
             pDescriptor = std::make_shared<rtps::TCPv4TransportDescriptor>();
@@ -351,6 +352,7 @@ XMLP_ret XMLParser::parseXMLTransportData(tinyxml2::XMLElement* p_root)
                 return ret;
             }
         }
+        */
         else
         {
             logError(XMLPARSER, "Invalid transport type: '" << sType << "'");
@@ -495,6 +497,7 @@ XMLP_ret XMLParser::parseXMLCommonTCPTransportData(tinyxml2::XMLElement* p_root,
     */
 
     XMLP_ret ret = XMLP_ret::XML_OK;
+    /*
     std::shared_ptr<rtps::TCPTransportDescriptor> pTCPDesc = std::dynamic_pointer_cast<rtps::TCPTransportDescriptor>(p_transport);
     if (pTCPDesc != nullptr)
     {
@@ -599,6 +602,7 @@ XMLP_ret XMLParser::parseXMLCommonTCPTransportData(tinyxml2::XMLElement* p_root,
         logError(XMLPARSER, "Error parsing TCP Transport data");
         ret = XMLP_ret::XML_ERROR;
     }
+    */
 
     return ret;
 }

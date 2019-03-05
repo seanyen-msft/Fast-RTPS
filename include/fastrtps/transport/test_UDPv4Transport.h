@@ -36,10 +36,8 @@ class test_UDPv4Transport : public UDPv4Transport
 public:
     test_UDPv4Transport(const test_UDPv4TransportDescriptor& descriptor);
 
-    virtual bool Send(const octet* sendBuffer, uint32_t sendBufferSize, const Locator_t& localLocator, const Locator_t& remoteLocator) override;
-
-    virtual bool Send(const octet* sendBuffer, uint32_t sendBufferSize, const Locator_t& localLocator,
-                        const Locator_t& remoteLocator, ChannelResource* pChannelResource) override;
+    virtual bool send(const octet* sendBuffer, uint32_t sendBufferSize, eProsimaUDPSocket& socket,
+            const Locator_t& remoteLocator, bool only_multicast_purpose) override;
 
     RTPS_DllAPI static bool test_UDPv4Transport_ShutdownAllNetwork;
     // Handle to a persistent log of dropped packets. Defaults to length 0 (no logging) to prevent wasted resources.

@@ -59,7 +59,6 @@ set(${PROJECT_NAME}_source_files
     rtps/messages/submessages/GapMsg.hpp
     rtps/messages/submessages/HeartbeatMsg.hpp
     rtps/network/NetworkFactory.cpp
-    rtps/network/SenderResource.cpp
     rtps/network/ReceiverResource.cpp
     rtps/participant/RTPSParticipant.cpp
     rtps/participant/RTPSParticipantImpl.cpp
@@ -73,21 +72,21 @@ set(${PROJECT_NAME}_source_files
     subscriber/Subscriber.cpp
     subscriber/SubscriberImpl.cpp
     subscriber/SubscriberHistory.cpp
-    transport/timedevent/CleanTCPSocketsEvent.cpp
+    #transport/timedevent/CleanTCPSocketsEvent.cpp
     transport/ChannelResource.cpp
     transport/UDPChannelResource.cpp
-    transport/TCPChannelResource.cpp
+    #transport/TCPChannelResource.cpp
     transport/UDPv4Transport.cpp
-    transport/TCPTransportInterface.cpp
+    #transport/TCPTransportInterface.cpp
     transport/UDPTransportInterface.cpp
-    transport/TCPv4Transport.cpp
+    #transport/TCPv4Transport.cpp
     transport/UDPv6Transport.cpp
-    transport/TCPv6Transport.cpp
+    #transport/TCPv6Transport.cpp
     transport/test_UDPv4Transport.cpp
-    transport/test_TCPv4Transport.cpp
-    transport/tcp/TCPControlMessage.cpp
-    transport/tcp/RTCPMessageManager.cpp
-    transport/tcp/test_RTCPMessageManager.cpp
+    #transport/test_TCPv4Transport.cpp
+    #transport/tcp/TCPControlMessage.cpp
+    #transport/tcp/RTCPMessageManager.cpp
+    #transport/tcp/test_RTCPMessageManager.cpp
 
     types/AnnotationDescriptor.cpp
     types/AnnotationParameterValue.cpp
