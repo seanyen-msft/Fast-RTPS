@@ -93,8 +93,8 @@ bool EDP::newLocalReaderProxyData(RTPSReader* reader, const TopicAttributes& att
     {
         if (att.type_id.m_type_identifier->_d() == 0) // Not set
         {
-            //*rpd.type_id().m_type_identifier = *TypeObjectFactory::GetInstance()->GetTypeIdentifier(rpd.typeName());
-            const TypeIdentifier* type_id = TypeObjectFactory::GetInstance()->GetTypeIdentifier(
+            //*rpd.type_id().m_type_identifier = *TypeObjectFactory::get_instance()->get_type_identifier(rpd.typeName());
+            const TypeIdentifier* type_id = TypeObjectFactory::get_instance()->get_type_identifier(
                     rpd.typeName(), att.getTopicDiscoveryKind() == COMPLETE);
             if (type_id == nullptr)
             {
@@ -114,8 +114,8 @@ bool EDP::newLocalReaderProxyData(RTPSReader* reader, const TopicAttributes& att
             && (att.type_id.m_type_identifier->_d() == EK_MINIMAL
                 || att.type_id.m_type_identifier->_d() == EK_COMPLETE)) // Not set
         {
-            //*rpd.type().m_type_object = *TypeObjectFactory::GetInstance()->GetTypeObject(rpd.typeName());
-            const TypeObject *type_obj = TypeObjectFactory::GetInstance()->GetTypeObject(
+            //*rpd.type().m_type_object = *TypeObjectFactory::get_instance()->get_type_object(rpd.typeName());
+            const TypeObject *type_obj = TypeObjectFactory::get_instance()->get_type_object(
                     rpd.typeName(), att.getTopicDiscoveryKind() == COMPLETE);
             if (type_obj == nullptr)
             {
@@ -182,7 +182,7 @@ bool EDP::newLocalWriterProxyData(RTPSWriter* writer, const TopicAttributes& att
     {
         if (att.type_id.m_type_identifier->_d() == 0) // Not set
         {
-            const TypeIdentifier* type_id = TypeObjectFactory::GetInstance()->GetTypeIdentifier(
+            const TypeIdentifier* type_id = TypeObjectFactory::get_instance()->get_type_identifier(
                     wpd.typeName(), att.getTopicDiscoveryKind() == COMPLETE);
             if (type_id == nullptr)
             {
@@ -202,7 +202,7 @@ bool EDP::newLocalWriterProxyData(RTPSWriter* writer, const TopicAttributes& att
             && (att.type_id.m_type_identifier->_d() == EK_MINIMAL
                 || att.type_id.m_type_identifier->_d() == EK_COMPLETE)) // Not set
         {
-            const TypeObject *type_obj = TypeObjectFactory::GetInstance()->GetTypeObject(
+            const TypeObject *type_obj = TypeObjectFactory::get_instance()->get_type_object(
                     wpd.typeName(), att.getTopicDiscoveryKind() == COMPLETE);
             if (type_obj == nullptr)
             {
