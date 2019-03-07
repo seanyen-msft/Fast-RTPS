@@ -197,6 +197,49 @@ public:
         }
     }
 
+    /**
+     * Count the number of selected locators.
+     *
+     * @return the number of selected locators.
+     */
+    size_t selected_size() const
+    {
+        size_t result = 0;
+
+        for (size_t index : selections_)
+        {
+            LocatorSelectorEntry* entry = entries_.at(index);
+            result += entry->state.multicast.size();
+            result += entry->state.unicast.size();
+        }
+
+        return result;
+    }
+
+    /**
+     * Performs an action on each selected locator.
+     *
+     * @param action   Unary function that accepts a locator as argument.
+     *                 The function shall not modify its argument.
+     *                 This can either be a function pointer or a function object.
+     */
+    template<class UnaryPredicate>
+    void for_each(UnaryPredicate action)
+    {
+        for (size_t index : selections_)
+        {
+            LocatorSelectorEntry* entry = entries_.at(index);
+            for (size_t loc_index : entry->state.multicast)
+            {
+                action(entry->multicast.at(loc_index));
+            }
+            for (size_t loc_index : entry->state.unicast)
+            {
+                action(entry->unicast.at(loc_index));
+            }
+        }
+    }
+
 private:
     //! Entries collection.
     ResourceLimitedVector<LocatorSelectorEntry*> entries_;
