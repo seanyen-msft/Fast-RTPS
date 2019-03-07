@@ -28,12 +28,10 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-HelloWorldSubscriber::HelloWorldSubscriber():mp_participant(nullptr),
-mp_subscriber(nullptr)
-{
-}
-
-bool HelloWorldSubscriber::init()
+HelloWorldSubscriber::HelloWorldSubscriber()
+    : mp_participant(nullptr)
+    , mp_subscriber(nullptr)
+    , m_partListener(this)
 {
     ParticipantAttributes PParam;
     PParam.rtps.builtin.use_SIMPLE_RTPSParticipantDiscoveryProtocol = true;
@@ -45,13 +43,13 @@ bool HelloWorldSubscriber::init()
     PParam.rtps.builtin.leaseDuration = 10; // 10 seconds
     PParam.rtps.builtin.leaseDuration_announcementperiod = 5;
     PParam.rtps.setName("Participant_sub");
+
     mp_participant = Domain::createParticipant(PParam, &m_partListener);
-    if(mp_participant==nullptr)
-        return false;
-
-    //REGISTER THE TYPE
-
     Domain::registerType(mp_participant,&m_type);
+}
+
+bool HelloWorldSubscriber::createSubscriber()
+{
     //CREATE THE SUBSCRIBER
     SubscriberAttributes Rparam;
     Rparam.topic.topicKind = NO_KEY;
@@ -63,17 +61,24 @@ bool HelloWorldSubscriber::init()
     Rparam.topic.resourceLimitsQos.allocated_samples = 20;
     Rparam.qos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
     Rparam.qos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
     mp_subscriber = Domain::createSubscriber(mp_participant,Rparam,(SubscriberListener*)&m_listener);
 
     if(mp_subscriber == nullptr)
+    {
         return false;
-
+    }
 
     return true;
 }
 
-HelloWorldSubscriber::~HelloWorldSubscriber() {
-    // TODO Auto-generated destructor stub
+bool HelloWorldSubscriber::destroySubscriber()
+{
+    return Domain::removeSubscriber(mp_subscriber);
+}
+
+HelloWorldSubscriber::~HelloWorldSubscriber()
+{
     Domain::removeParticipant(mp_participant);
 }
 
@@ -82,12 +87,12 @@ void HelloWorldSubscriber::SubListener::onSubscriptionMatched(Subscriber* /*sub*
     if(info.status == MATCHED_MATCHING)
     {
         n_matched++;
-        std::cout << "Subscriber matched"<<std::endl;
+//        std::cout << "Subscriber matched"<<std::endl;
     }
     else
     {
         n_matched--;
-        std::cout << "Subscriber unmatched"<<std::endl;
+//        std::cout << "Subscriber unmatched"<<std::endl;
     }
 }
 
@@ -98,7 +103,6 @@ void HelloWorldSubscriber::SubListener::onNewDataMessage(Subscriber* sub)
         if(m_info.sampleKind == ALIVE)
         {
             this->n_samples++;
-            // Print your structure data here.
             std::cout << "Message "<<m_Hello.message()<< " "<< m_Hello.index()<< " RECEIVED"<<std::endl;
         }
     }
@@ -107,17 +111,16 @@ void HelloWorldSubscriber::SubListener::onNewDataMessage(Subscriber* sub)
 
 void HelloWorldSubscriber::PartListener::onParticipantDiscovery(Participant *participant, ParticipantDiscoveryInfo &&info)
 {
-    if (info.status == ParticipantDiscoveryInfo::REMOVED_PARTICIPANT)
+    if ( info.status == ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT )
     {
-        std::cout << "\tSubscriber: publisher removed" << std::endl;
+        std::cout << "\tParticipant discovered, creating subscriber" << std::endl;
+        mp_subscriber->createSubscriber();
     }
-    else if (info.status == ParticipantDiscoveryInfo::DROPPED_PARTICIPANT)
+    else if ( info.status == ParticipantDiscoveryInfo::REMOVED_PARTICIPANT ||
+              info.status == ParticipantDiscoveryInfo::DROPPED_PARTICIPANT )
     {
-        std::cout << "\tSubscriber: publisher dropped" << std::endl;
-    }
-    else if (info.status == ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT)
-    {
-        std::cout << "\tSubscriber: publisher discovered" << std::endl;
+        std::cout << "\tParticipant dropped or removed, removing subscriber" << std::endl;
+        mp_subscriber->destroySubscriber();
     }
 }
 

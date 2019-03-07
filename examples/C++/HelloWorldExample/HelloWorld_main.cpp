@@ -72,10 +72,7 @@ int main(int argc, char** argv)
         case 2:
             {
                 HelloWorldSubscriber mysub;
-                if(mysub.init())
-                {
-                    mysub.run();
-                }
+                mysub.run();
                 break;
             }
     }

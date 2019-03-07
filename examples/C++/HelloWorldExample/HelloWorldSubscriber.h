@@ -33,17 +33,26 @@
 
 class HelloWorldSubscriber {
 public:
+
+    //! Constructor
 	HelloWorldSubscriber();
+
+    //! Destructor
 	virtual ~HelloWorldSubscriber();
-	//!Initialize the subscriber
-	bool init();
-	//!RUN the subscriber
+
+    //! Run the subscriber
 	void run();
-	//!Run the subscriber until number samples have been recevied.
+
+    //! Run the subscriber until number samples have been recevied.
 	void run(uint32_t number);
+
+    bool createSubscriber();
+    bool destroySubscriber();
+
 private:
 	eprosima::fastrtps::Participant* mp_participant;
 	eprosima::fastrtps::Subscriber* mp_subscriber;
+
 public:
 	class SubListener:public eprosima::fastrtps::SubscriberListener
 	{
@@ -57,11 +66,23 @@ public:
 		int n_matched;
 		uint32_t n_samples;
 	}m_listener;
+
     class PartListener : public eprosima::fastrtps::ParticipantListener
     {
     public:
+
+        PartListener(HelloWorldSubscriber* subscriber)
+            : mp_subscriber(subscriber)
+        {};
+
         void onParticipantDiscovery(eprosima::fastrtps::Participant* participant, eprosima::fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
+
+    private:
+
+        HelloWorldSubscriber* mp_subscriber;
+
     }m_partListener;
+
 private:
 	HelloWorldPubSubType m_type;
 };
