@@ -41,7 +41,8 @@ bool HelloWorldSubscriber::init()
     PParam.rtps.builtin.m_simpleEDP.use_PublicationReaderANDSubscriptionWriter = true;
     PParam.rtps.builtin.m_simpleEDP.use_PublicationWriterANDSubscriptionReader = true;
     PParam.rtps.builtin.domainId = 0;
-    PParam.rtps.builtin.leaseDuration = c_TimeInfinite;
+    PParam.rtps.builtin.use_WriterLivelinessProtocol = true;
+    PParam.rtps.builtin.leaseDuration = 10; // 10 seconds
     PParam.rtps.setName("Participant_sub");
     mp_participant = Domain::createParticipant(PParam);
     if(mp_participant==nullptr)
