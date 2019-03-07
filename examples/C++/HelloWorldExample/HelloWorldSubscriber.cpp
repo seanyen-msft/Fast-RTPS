@@ -69,11 +69,15 @@ bool HelloWorldSubscriber::createSubscriber()
         return false;
     }
 
+    std::cout << "\tSubscriber created with GUID: ";
+    std::cout << mp_subscriber->getGuid() << std::endl;
     return true;
 }
 
 bool HelloWorldSubscriber::destroySubscriber()
 {
+    std::cout << "\tSubscriber removed with GUID: ";
+    std::cout << mp_subscriber->getGuid() << std::endl;
     return Domain::removeSubscriber(mp_subscriber);
 }
 
@@ -113,13 +117,11 @@ void HelloWorldSubscriber::PartListener::onParticipantDiscovery(Participant *par
 {
     if ( info.status == ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT )
     {
-        std::cout << "\tParticipant discovered, creating subscriber" << std::endl;
         mp_subscriber->createSubscriber();
     }
     else if ( info.status == ParticipantDiscoveryInfo::REMOVED_PARTICIPANT ||
               info.status == ParticipantDiscoveryInfo::DROPPED_PARTICIPANT )
     {
-        std::cout << "\tParticipant dropped or removed, removing subscriber" << std::endl;
         mp_subscriber->destroySubscriber();
     }
     else if ( info.status == ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT )
