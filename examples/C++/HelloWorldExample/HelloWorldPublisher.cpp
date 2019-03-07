@@ -49,7 +49,7 @@ bool HelloWorldPublisher::init()
     PParam.rtps.builtin.domainId = 0;
     PParam.rtps.builtin.use_WriterLivelinessProtocol = true;
     PParam.rtps.builtin.leaseDuration = 10;
-    PParam.rtps.builtin.leaseDuration_announcementperiod = 10;
+    PParam.rtps.builtin.leaseDuration_announcementperiod = 5;
     PParam.rtps.setName("Participant_pub");
     mp_participant = Domain::createParticipant(PParam);
 
