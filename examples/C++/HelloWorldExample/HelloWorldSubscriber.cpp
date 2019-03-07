@@ -45,7 +45,7 @@ bool HelloWorldSubscriber::init()
     PParam.rtps.builtin.leaseDuration = 10; // 10 seconds
     PParam.rtps.builtin.leaseDuration_announcementperiod = 5;
     PParam.rtps.setName("Participant_sub");
-    mp_participant = Domain::createParticipant(PParam);
+    mp_participant = Domain::createParticipant(PParam, &m_partListener);
     if(mp_participant==nullptr)
         return false;
 
@@ -105,6 +105,21 @@ void HelloWorldSubscriber::SubListener::onNewDataMessage(Subscriber* sub)
 
 }
 
+void HelloWorldSubscriber::PartListener::onParticipantDiscovery(Participant *participant, ParticipantDiscoveryInfo &&info)
+{
+    if (info.status == ParticipantDiscoveryInfo::REMOVED_PARTICIPANT)
+    {
+        std::cout << "\tSubscriber: publisher removed" << std::endl;
+    }
+    else if (info.status == ParticipantDiscoveryInfo::DROPPED_PARTICIPANT)
+    {
+        std::cout << "\tSubscriber: publisher dropped" << std::endl;
+    }
+    else if (info.status == ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT)
+    {
+        std::cout << "\tSubscriber: publisher discovered" << std::endl;
+    }
+}
 
 void HelloWorldSubscriber::run()
 {

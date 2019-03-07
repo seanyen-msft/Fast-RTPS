@@ -26,9 +26,8 @@
 #include <fastrtps/attributes/SubscriberAttributes.h>
 #include <fastrtps/subscriber/SubscriberListener.h>
 #include <fastrtps/subscriber/SampleInfo.h>
-
-
-
+#include <fastrtps/participant/Participant.h>
+#include <fastrtps/participant/ParticipantListener.h>
 
 #include "HelloWorld.h"
 
@@ -58,6 +57,11 @@ public:
 		int n_matched;
 		uint32_t n_samples;
 	}m_listener;
+    class PartListener : public eprosima::fastrtps::ParticipantListener
+    {
+    public:
+        void onParticipantDiscovery(eprosima::fastrtps::Participant* participant, eprosima::fastrtps::rtps::ParticipantDiscoveryInfo&& info) override;
+    }m_partListener;
 private:
 	HelloWorldPubSubType m_type;
 };
