@@ -122,6 +122,10 @@ void HelloWorldSubscriber::PartListener::onParticipantDiscovery(Participant *par
         std::cout << "\tParticipant dropped or removed, removing subscriber" << std::endl;
         mp_subscriber->destroySubscriber();
     }
+    else if ( info.status == ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT )
+    {
+        std::cout << "\tParticipant QoS changed" << std::endl;
+    }
 }
 
 void HelloWorldSubscriber::run()
